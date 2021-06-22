@@ -1,0 +1,1 @@
+This repository is for working with and learning SQL
