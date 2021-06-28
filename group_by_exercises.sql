@@ -58,11 +58,11 @@ Vidya	F	81
 Maya	M	146
 */
 
-# Q8 - Using your query that generates a username for all of the employees, generate a count employees for each unique username. Are there any duplicate usernames? BONUS: How many duplicate usernames are there?
+# Q8 - Using your query that generates a username for all of the employees, generate a count employees for each unique username. Are there any duplicate usernames? BONUS: How many duplicate usernames are there? I'm reading this as 'How many unique duplicate usernames are there?'
 SELECT LOWER( CONCAT( SUBSTR(first_name, 1, 1), SUBSTR(last_name, 1, 4), "_", SUBSTR( birth_date, 6, 2), SUBSTR(birth_date, 3, 2) ) ) AS username,
 	COUNT(*) AS num_users
 FROM employees
 GROUP BY username
 HAVING COUNT(username) > 1;
 /*
-Yes, there are duplicate usernames. There are 13,251 duplicate usernames.
+Yes, there are duplicate usernames. There are 13,251 unique duplicate usernames.
