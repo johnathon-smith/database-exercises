@@ -62,6 +62,7 @@ Maya	M	146
 SELECT LOWER( CONCAT( SUBSTR(first_name, 1, 1), SUBSTR(last_name, 1, 4), "_", SUBSTR( birth_date, 6, 2), SUBSTR(birth_date, 3, 2) ) ) AS username,
 	COUNT(*) AS num_users
 FROM employees
-GROUP BY username;
+GROUP BY username
+HAVING COUNT(username) > 1;
 /*
-Yes, there are duplicate usernames. 
+Yes, there are duplicate usernames. There are 13,251 duplicate usernames.
