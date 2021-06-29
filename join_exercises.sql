@@ -22,17 +22,12 @@ GROUP BY roles.name;
 # Q1 - Use the employees database.
 USE employees;
 
-# Q2 - Write a query that shows each department along with the name of the current manager for that department.
-DESCRIBE dept_manager;
-DESCRIBE dept_emp;
-DESCRIBE departments;
-DESCRIBE current_dept_emp;
-DESCRIBE employees;
 
+# Q2 - Write a query that shows each department along with the name of the current manager for that department.
 SELECT departments.dept_name AS Department_Name, CONCAT(employees.first_name, " ", employees.last_name) AS Department_Manager
 FROM dept_manager 
-JOIN employees on employees.emp_no = dept_manager.emp_no
-JOIN departments on departments.dept_no = dept_manager.dept_no
+JOIN employees ON employees.emp_no = dept_manager.emp_no
+JOIN departments ON departments.dept_no = dept_manager.dept_no
 WHERE to_date > CURDATE();
 
 
@@ -117,22 +112,22 @@ WHERE dept_manager.to_date > CURDATE()
 ORDER BY salary DESC
 LIMIT 1;
 
-
-
-# Q10 - Bonus Find the names of all current employees, their department name, and their current manager's name.
-SELECT CONCAT(first_name, " ", last_name) AS 'Employee Name', dept_name AS 'Department Name', CONCAT(first_name, " ", last_name) AS 'Manager Name'
-FROM employees
-JOIN dept_manager ON dept_manager.emp_no = employees.emp_no
-JOIN dept_emp ON dept_emp.emp_no = employees.emp_no
-JOIN departments ON departments.dept_no = dept_emp.dept_no
-WHERE dept_emp.to_date > CURDATE()
-	AND dept_manager.to_date > CURDATE();
-	
 describe dept_manager;
 describe dept_emp;
 select distinct title FROM titles;
 
+# Q10 - Bonus Find the names of all current employees, their department name, and their current manager's name.
+SELECT CONCAT(e.first_name, " ", e.last_name) AS 'Employee Name', dept_name AS 'Department Name', CONCAT(e1.first_name, " ", e1.last_name) AS 'Manager Name'
+FROM employees AS e
+JOIN dept_emp ON dept_emp.emp_no = e.emp_no
+JOIN dept_manager ON dept_manager.dept_no = dept_emp.dept_no
+JOIN departments ON departments.dept_no = dept_emp.dept_no
+JOIN employees AS e1 ON e1.emp_no = dept_manager.emp_no
+WHERE dept_emp.to_date > CURDATE()
+	AND dept_manager.to_date > CURDATE();
+	
 
+# Q11 - Bonus Who is the highest paid employee within each department.
 
 
 
