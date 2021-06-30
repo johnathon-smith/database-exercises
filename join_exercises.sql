@@ -128,6 +128,71 @@ WHERE dept_emp.to_date > CURDATE()
 	
 
 # Q11 - Bonus Who is the highest paid employee within each department.
+SELECT dept_name, MAX(salary)
+FROM employees
+JOIN dept_emp ON dept_emp.emp_no = employees.emp_no
+JOIN departments ON departments.dept_no = dept_emp.dept_no
+JOIN salaries ON salaries.emp_no = employees.emp_no
+WHERE dept_emp.to_date > CURDATE()
+	AND salaries.to_date > CURDATE()
+GROUP BY dept_name;
+#This returns the max salary in each department, but does not give employee names
 
-
+SELECT 
+	t1.dept_name AS 'Department Name',
+	t1.salary AS 'Salary',
+	CONCAT(first_name,' ', last_name) AS 'Employee Name'
+FROM 
+	(
+	-- Part 1 which builds the base table to employee names, salaries and dept names
+	SELECT
+		salary, dept_name, first_name, last_name
+	FROM
+		salaries
+	JOIN
+		dept_emp 
+	USING(emp_no)
+	JOIN 
+		departments 
+	USING(dept_no)
+	JOIN 
+		employees
+	USING(emp_no)
+	WHERE 
+		dept_emp.to_date >= NOW()
+	AND 
+		salaries.to_date >= NOW()
+	) AS t1 # This is table_1 result created
+INNER JOIN
+	(
+	-- Part 2 builds another table to cross reference the previous part with the calculated max salaries
+	SELECT dept_name, MAX(salary) as max_salary
+	FROM 
+		(
+		SELECT
+			salary, dept_name, first_name, last_name
+		FROM
+			salaries
+		JOIN
+			dept_emp 
+		USING(emp_no)
+		JOIN 
+			departments 
+		USING(dept_no)
+		JOIN 
+			employees
+		USING(emp_no)
+		WHERE 
+			dept_emp.to_date >= NOW()
+			AND 
+			salaries.to_date >= NOW()
+		) as t2
+	GROUP BY dept_name
+	) AS t2 # This is table_2 result created
+	-- Joins both tables based on the dept_name and matches the salary & department name with the max_salary
+	ON 
+	t1.dept_name = t2.dept_name
+	AND
+	t1.salary = t2.max_salary
+ORDER BY 'Department Name' DESC;
 
