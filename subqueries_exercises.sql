@@ -37,8 +37,24 @@ Hilary	Kambil
 */
 
 # Q5 - Find all the employees who currently have a higher salary than the companies overall, historical average salary.
+SELECT first_name, last_name FROM employees 
+WHERE emp_no IN (
+		SELECT emp_no FROM salaries WHERE salary > (SELECT AVG(salary) FROM salaries)
+		AND to_date > CURDATE()
+	);
 	
-	
+# Q6 - How many current salaries are within 1 standard deviation of the current highest salary? What percentage of all salaries is this?
+#I read the last question to mean what percentage of all current salaries is this?
+SELECT COUNT(*) AS 'Number of Current Salaries +/- 1 Std. Dev.', CONCAT('%', (COUNT(*) / (SELECT COUNT(*) FROM salaries WHERE to_date > CURDATE() ) ) * 100 ) AS 'Percentage of Current Salaries'
+FROM salaries
+WHERE to_date > CURDATE()
+	AND salary BETWEEN ( (SELECT MAX(salary) FROM salaries WHERE to_date > CURDATE() ) - (SELECT STDDEV(salary) FROM salaries WHERE to_date > CURDATE() ) ) #This is max salary - 1 std dev for the lower bound
+		AND (SELECT MAX(salary) FROM salaries WHERE to_date > CURDATE() ); #The max salary itself acts as the upper bound
+		
+#BONUS
+# Q1 - Find all the department names that currently have female managers.
 
+
+describe dept_manager;
 
 
