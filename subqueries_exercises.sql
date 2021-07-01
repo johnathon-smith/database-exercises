@@ -53,6 +53,22 @@ WHERE to_date > CURDATE()
 		
 #BONUS
 # Q1 - Find all the department names that currently have female managers.
+SELECT dept_name FROM departments
+JOIN dept_manager ON dept_manager.dept_no = departments.dept_no
+WHERE to_date > CURDATE()
+	AND emp_no IN (
+		SELECT emp_no FROM employees WHERE gender = 'F'
+	);
+	
+# Q2 - Find the first and last name of the employee with the highest salary. I'm assuming this means the current highest salary.
+SELECT first_name, last_name FROM employees
+WHERE emp_no IN (
+		SELECT emp_no FROM salaries WHERE to_date > CURDATE()
+		AND salary = (SELECT MAX(salary) FROM salaries WHERE to_date > CURDATE())
+	);
+	
+# Q3 - Find the department name that the employee with the highest salary works in.
+
 
 
 describe dept_manager;
