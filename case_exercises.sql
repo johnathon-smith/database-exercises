@@ -1,8 +1,27 @@
 USE employees;
-
+DESCRIBE employees;
 # Q1 - Write a query that returns all employees (emp_no), their department number, their start date, their end date, and a new column 'is_current_employee' that is a 1 if the employee is still with the company and 0 if not.
+
+#This solution is too simple and brings up multiples of the same employee if they ever worked in more than one department, but also shows us how long each employee worked in each department. This was my original solution.
 SELECT emp_no, dept_no, from_date, to_date, IF( to_date > CURDATE(), True, False) AS is_current_employee
 FROM dept_emp;
+
+#This solution should only have one instance of each employee and have their original hire date as well as their last date employed, regardless of department. 
+SELECT 
+	de.emp_no,
+	dept_no,
+	hire_date,
+	to_date,
+	IF(to_date > CURDATE(), 1, 0) AS current_employee
+FROM dept_emp AS de
+JOIN (SELECT 
+			emp_no,
+			MAX(to_date) AS max_date
+		FROM dept_emp
+		GROUP BY emp_no) as last_dept 
+		ON de.emp_no = last_dept.emp_no
+			AND de.to_date = last_dept.max_date
+JOIN employees AS e ON e.emp_no = de.emp_no;
 
 # Q2 - Write a query that returns all employee names (previous and current), and a new column 'alpha_group' that returns 'A-H', 'I-Q', or 'R-Z' depending on the first letter of their last name.
 SELECT first_name, last_name,
@@ -45,17 +64,17 @@ SELECT
 		WHEN dept_name = 'Customer Service' THEN dept_name
 		ELSE NULL
 		END AS dept_group,
-	CASE 
-		WHEN dept_group = 'R&D'
-			THEN (SELECT AVG(salary) FROM salaries WHERE to_date > CURDATE() 
-				AND emp_no IN (
-					SELECT emp_no FROM dept_emp WHERE dept_no IN (
-						SELECT dept_no FROM departments WHERE dept_name = 'Research' OR dept_name = 'Development')))
-		END AS R&D_avg_salary
+	AVG(salary) AS avg_salary
 FROM departments
+JOIN dept_emp ON dept_emp.dept_no = departments.dept_no
+JOIN salaries ON salaries.emp_no = dept_emp.emp_no
+WHERE salaries.to_date > CURDATE()
 GROUP BY dept_group;
-
-
-SELECT dept_name FROM departments;
-DESCRIBE salaries;
+/*
+R&D	67718.5563
+Sales & Marketing	86379.3407
+Prod & QM	67315.3668
+Finance & HR	71111.6674
+Customer Service	66971.3536
+*/
 			
