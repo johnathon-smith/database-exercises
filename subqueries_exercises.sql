@@ -77,9 +77,14 @@ WHERE emp_no IN (
 	);
 	
 # Q3 - Find the department name that the employee with the highest salary works in.
+SELECT dept_name FROM departments
+WHERE dept_no IN (
+		SELECT dept_no FROM dept_emp WHERE to_date > CURDATE()
+		AND emp_no IN (
+			SELECT emp_no FROM salaries WHERE to_date > CURDATE()
+			AND salary = (SELECT MAX(salary) FROM salaries WHERE to_date > CURDATE())
+		)
+	);
 
-
-
-describe dept_manager;
 
 
