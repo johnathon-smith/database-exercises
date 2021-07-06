@@ -52,7 +52,7 @@ ALTER TABLE payment MODIFY amount INTEGER; #changes the data type of 'amount' to
 
 USE employees;
 
-#This was my first answer. I didn't need to use temporary tables.
+#This was my first answer, but didn't use temporary tables. I don't really see the value in using a temporary table here. It seems simpler just to put it all in one query.
 SELECT dept_name,
 	AVG(salary) AS current_salary_average,
 	(SELECT AVG(salary) FROM salaries) AS historical_salary_average,
@@ -64,9 +64,37 @@ WHERE dept_emp.to_date > CURDATE()
 	AND salaries.to_date > CURDATE()
 GROUP BY dept_name;
 
+
+
+
 #Now I will try doing the same thing, but with temporary tables
+CREATE TEMPORARY TABLE germain_1466.salary_scores AS
+SELECT dept_name,
+	AVG(salary) AS current_salary_average,
+	(SELECT AVG(salary) FROM salaries) AS historical_salary_average
+FROM salaries
+JOIN dept_emp ON dept_emp.emp_no = salaries.emp_no
+JOIN departments ON dept_emp.dept_no = departments.dept_no
+WHERE dept_emp.to_date > CURDATE()
+	AND salaries.to_date > CURDATE()
+GROUP BY dept_name;
 
+USE germain_1466;
+#change the tables to add the needed columns
+ALTER TABLE salary_scores ADD std_dev float;
+ALTER TABLE salary_scores ADD z_score float;
 
+#set the needed values to calculate std dev
+UPDATE salary_scores SET std_dev = (SELECT STDDEV(salary) FROM employees.salaries);
+UPDATE salary_scores SET z_score = (current_salary_average - historical_salary_average) / std_dev;
+
+#We can now see the z-scores
+SELECT * FROM salary_scores;
+
+/*
+Sales is the best department to work in right now because it has the highest z-score at 1.48137
+Human resources is the worst department to work in right now because it has the lowest z-score at 0.00657534
+*/
 
 
 
