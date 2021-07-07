@@ -87,9 +87,111 @@ Caribbean	24
 */
 
 # Q3 - What is the population for each region?
+SELECT Region, SUM(Population)
+FROM country
+GROUP BY Region
+ORDER BY SUM(Population) DESC;
+/*
+Region	SUM(Population)
+Eastern Asia	1507328000
+Southern and Central Asia	1490776000
+Southeast Asia	518541000
+South America	345780000
+North America	309632000
+Eastern Europe	307026000
+Eastern Africa	246999000
+Western Africa	221672000
+Middle East	188380700
+Western Europe	183247600
+Northern Africa	173266000
+Southern Europe	144674200
+Central America	135221000
+Central Africa	95652000
+British Islands	63398500
+Southern Africa	46886000
+Caribbean	38140000
+Nordic Countries	24166400
+Australia and New Zealand	22753100
+Baltic Countries	7561900
+Melanesia	6472000
+Polynesia	633050
+Micronesia	543000
+Micronesia/Caribbean	0
+Antarctica	0
+*/
 
+# Q4 - What is the population for each continent?
+SELECT Continent, SUM(Population) AS population 
+FROM country
+GROUP BY Continent
+ORDER BY population DESC;
+/*
+Continent	population
+Asia	3705025700
+Africa	784475000
+Europe	730074600
+North America	482993000
+South America	345780000
+Oceania	30401150
+Antarctica	0
+*/
 
+# Q5 - What is the average life expectancy globally?
+SELECT AVG(LifeExpectancy)
+FROM country;
+/*
+AVG(LifeExpectancy)
+66.48604
+*/
 
+# Q6 - What is the average life expectancy for each region, each continent? Sort the results from shortest to longest
+SELECT Continent, AVG(LifeExpectancy)
+FROM country
+GROUP BY Continent
+ORDER BY AVG(LifeExpectancy) ASC;
+/*
+Continent	AVG(LifeExpectancy)
+Antarctica	NULL
+Africa	52.57193
+Asia	67.44118
+Oceania	69.71500
+South America	70.94615
+North America	72.99189
+Europe	75.14773
+*/
+
+SELECT Region, AVG(LifeExpectancy)
+FROM country
+GROUP BY Region
+ORDER BY AVG(LifeExpectancy) ASC;
+/*
+Region	AVG(LifeExpectancy)
+Micronesia/Caribbean	NULL
+Antarctica	NULL
+Southern Africa	44.82000
+Central Africa	50.31111
+Eastern Africa	50.81053
+Western Africa	52.74118
+Southern and Central Asia	61.35000
+Southeast Asia	64.40000
+Northern Africa	65.38571
+Melanesia	67.14000
+Micronesia	68.08571
+Baltic Countries	69.00000
+Eastern Europe	69.93000
+Middle East	70.56667
+Polynesia	70.73333
+South America	70.94615
+Central America	71.02500
+Caribbean	73.05833
+Eastern Asia	75.25000
+North America	75.82000
+Southern Europe	76.52857
+British Islands	77.25000
+Western Europe	78.25556
+Nordic Countries	78.33333
+Australia and New Zealand	78.80000
+*/
 
 
 
